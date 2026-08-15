@@ -15,18 +15,25 @@ const IMAGE_MIME_BY_EXT: Record<string, string> = {
 }
 
 /**
- * The Supabase storage-js client silently ignores the `contentType` upload
- * option whenever the upload body is a File/Blob instance — it builds a
- * FormData and appends the file as-is, so the Content-Type actually sent is
- * the browser/OS's own (unreliable, extension-dependent) detection on the
- * original File object, not the option we pass. Rebuilding the body as a
- * fresh Blob with an explicitly-set `type` sidesteps this: that Blob's own
- * `.type` is what ends up on the wire, regardless of what the source File
- * was detected as.
+ * The Supabase storage-js client builds a multipart/form-data request
+ * whenever the upload body is a File/Blob instance, appending the file as a
+ * form part. Diagnosed directly against this project's storage backend:
+ * even with the form part's own Blob.type correctly set to 'text/html' and
+ * the resulting storage.objects metadata row correctly recording
+ * mimetype: 'text/html', the object is still served with
+ * Content-Type: text/plain — reproducibly, across multiple never-before-used
+ * object keys, ruling out both a client-side type bug and stale/cached
+ * state. The Postgres bookkeeping record and the actual served bytes are
+ * simply fed from different signals on this backend, and only the outer
+ * HTTP request's real Content-Type header — not anything carried inside a
+ * multipart body — reaches the one that matters.
+ *
+ * Passing a raw Uint8Array (neither a Blob nor FormData) instead of the File
+ * avoids the multipart branch entirely: storage-js then sets
+ * `headers['content-type']` directly as a genuine header on the request.
  */
-async function withExplicitType(file: File, mimeType: string): Promise<Blob> {
-  const bytes = await file.arrayBuffer()
-  return new Blob([bytes], { type: mimeType })
+async function readAsBytes(file: File): Promise<Uint8Array> {
+  return new Uint8Array(await file.arrayBuffer())
 }
 
 /** Uploads a project image to Supabase Storage and returns its public URL. */
@@ -37,7 +44,7 @@ export async function uploadProjectAsset(file: File, slug: string, kind: AssetKi
   const ext = (file.name.split('.').pop() || 'png').toLowerCase()
   const mimeType = IMAGE_MIME_BY_EXT[ext] ?? file.type ?? 'application/octet-stream'
   const path = `projects/${safeSlug}/${kind}/${Date.now()}.${ext}`
-  const body = await withExplicitType(file, mimeType)
+  const body = await readAsBytes(file)
 
   const { error } = await supabase.storage.from(ASSETS_BUCKET).upload(path, body, {
     cacheControl: '3600',
@@ -71,7 +78,7 @@ export async function uploadProjectDemo(file: File, slug: string): Promise<strin
 
   const safeSlug = slug.trim() || 'untitled'
   const path = `projects/${safeSlug}/demo-${Date.now()}.html`
-  const body = await withExplicitType(file, 'text/html')
+  const body = await readAsBytes(file)
 
   const { error } = await supabase.storage.from(DEMOS_BUCKET).upload(path, body, {
     cacheControl: '3600',
