@@ -1,8 +1,10 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowUpRight, FileText } from 'lucide-react'
+import { ArrowUpRight, FileText, Loader2 } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
 import { Card } from '@/components/ui/Card'
 import { accentClasses } from '@/lib/accent'
+import { openHtmlDemo } from '@/lib/openHtmlDemo'
 import type { Project } from '@/data/types'
 import { cn } from '@/lib/cn'
 
@@ -11,6 +13,7 @@ import { cn } from '@/lib/cn'
 export function ProjectCard({ project, featured = false }: { project: Project; featured?: boolean }) {
   const classes = accentClasses(project.accent)
   const demoHref = project.demoType === 'internal' ? project.demoPath : project.demoType === 'external' ? project.demoUrl : undefined
+  const [openingDemo, setOpeningDemo] = useState(false)
 
   return (
     <Card
@@ -73,18 +76,25 @@ export function ProjectCard({ project, featured = false }: { project: Project; f
           </Link>
         )}
         {demoHref && project.demoType === 'external' && (
-          <a
-            href={demoHref}
-            target="_blank"
-            rel="noreferrer"
+          <button
+            type="button"
+            disabled={openingDemo}
+            onClick={async () => {
+              setOpeningDemo(true)
+              try {
+                await openHtmlDemo(demoHref)
+              } finally {
+                setOpeningDemo(false)
+              }
+            }}
             className={cn(
-              'inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] px-3.5 py-2 text-[13px] font-medium text-on-accent transition-opacity hover:opacity-90',
+              'inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] px-3.5 py-2 text-[13px] font-medium text-on-accent transition-opacity hover:opacity-90 disabled:opacity-60',
               classes.solidBg,
             )}
           >
             {featured ? 'Open Interactive Demo' : 'Explore Demo'}
-            <ArrowUpRight className="h-3.5 w-3.5" />
-          </a>
+            {openingDemo ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ArrowUpRight className="h-3.5 w-3.5" />}
+          </button>
         )}
         <Link
           to={`/work/${project.slug}`}
