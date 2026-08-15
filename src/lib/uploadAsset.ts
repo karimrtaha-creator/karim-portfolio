@@ -50,9 +50,19 @@ export async function uploadProjectAsset(file: File, slug: string, kind: AssetKi
   return data.publicUrl
 }
 
-/** Uploads a standalone HTML demo file to its own dedicated bucket and
- *  returns its public URL. Re-uploading for the same project's slug replaces
- *  the previous demo rather than accumulating orphaned files. */
+/**
+ * Uploads a standalone HTML demo file to its own dedicated bucket and
+ * returns its public URL.
+ *
+ * Each upload gets a fresh, never-reused path rather than upserting a fixed
+ * `demo.html` filename. This isn't just to avoid orphaned files — an
+ * observed, reproducible issue on this backend is that a given object key,
+ * once served with a wrong Content-Type, can keep serving that same wrong
+ * header on subsequent uploads to the identical key even when the write is
+ * verifiably fresh (new ETag/Last-Modified) and the object's own metadata
+ * record is correct. Writing to a brand-new key every time sidesteps that
+ * entirely — there is no stale state to inherit.
+ */
 export async function uploadProjectDemo(file: File, slug: string): Promise<string> {
   if (!supabase) throw new Error('Supabase is not configured.')
 
@@ -60,12 +70,12 @@ export async function uploadProjectDemo(file: File, slug: string): Promise<strin
   if (!isHtml) throw new Error('Only .html files are supported for demo uploads.')
 
   const safeSlug = slug.trim() || 'untitled'
-  const path = `projects/${safeSlug}/demo.html`
+  const path = `projects/${safeSlug}/demo-${Date.now()}.html`
   const body = await withExplicitType(file, 'text/html')
 
   const { error } = await supabase.storage.from(DEMOS_BUCKET).upload(path, body, {
     cacheControl: '3600',
-    upsert: true,
+    upsert: false,
     contentType: 'text/html',
   })
   if (error) throw error
