@@ -1,0 +1,138 @@
+/* ==========================================================================
+   Design tokens — semantic CSS custom properties.
+   Source of truth: the "Bit-Perfect Portfolio" Stitch design system
+   (stitch.withgoogle.com/projects/4382441434042954079). Dark is the primary,
+   default aesthetic. A light variant is kept behind [data-theme="light"]
+   for the theme toggle, evolved from the site's pre-Stitch palette.
+   ========================================================================== */
+
+:root {
+  /* surfaces — Level 0 base / Level 1 cards / Level 2 modals, per Stitch elevation spec */
+  --bg: #0b1326;
+  --bg-inset: #060e20;
+  --surface: #1e293b;
+  --surface-2: #171f33;
+  --grid-line: #141c30;
+  --border: #334155;
+  --border-strong: #87929a;
+
+  /* ink */
+  --ink: #dae2fd;
+  --ink-soft: #bdc8d1;
+  --ink-dim: #87929a;
+  --ink-faint: #5b6472;
+
+  /* brand accent — vibrant sky blue, per Stitch */
+  --accent: #38bdf8;
+  --accent-strong: #8ed5ff;
+  --accent-soft: #0f2a3a;
+  --accent-ink: #8ed5ff;
+  --on-accent: #00354a;
+
+  /* secondary accents used sparingly for demo identity + status */
+  --amber: #ffc176;
+  --amber-soft: #2e2007;
+  --amber-ink: #ffc176;
+
+  --violet: #b3a6f2;
+  --violet-soft: #1c1a3a;
+  --violet-ink: #d9d0ff;
+
+  --blue: #7bd0ff;
+  --blue-soft: #0f2a3a;
+  --blue-ink: #8ed5ff;
+
+  --rose: #ffb0c0;
+  --rose-soft: #331a22;
+  --rose-ink: #ffc8d3;
+
+  --teal: #6fe3d6;
+  --teal-soft: #0d2b28;
+  --teal-ink: #a3f0e6;
+
+  /* status */
+  --success: #10b981;
+  --success-soft: #0d2820;
+  --warning: #f59e0b;
+  --warning-soft: #2e2007;
+  --danger: #ef4444;
+  --danger-soft: #331414;
+  --info: #7bd0ff;
+  --info-soft: #0f2a3a;
+
+  /* reserved exclusively for "DEMO DATA" / "PUBLIC DEMO" markers, per Stitch spec */
+  --demo: #6366f1;
+  --demo-soft: #1e1c3d;
+  --demo-ink: #b4b3ff;
+
+  /* elevation — hairline outlines + low-opacity "ambient glow", not physical shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 32px rgba(56, 189, 248, 0.08);
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  --font-display: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+}
+
+:root[data-theme='light'] {
+  --bg: #faf9f5;
+  --bg-inset: #f2f0e8;
+  --surface: #ffffff;
+  --surface-2: #f6f4ee;
+  --grid-line: #eae7dc;
+  --border: #ddd9cb;
+  --border-strong: #c7c1ac;
+
+  --ink: #16211c;
+  --ink-soft: #49574f;
+  --ink-dim: #7c887f;
+  --ink-faint: #a7ae9e;
+
+  --accent: #1e6b4b;
+  --accent-strong: #124f38;
+  --accent-soft: #e5f1ea;
+  --accent-ink: #0c3626;
+  --on-accent: #f7fbf8;
+
+  --amber: #b9812f;
+  --amber-soft: #f7ecd8;
+  --amber-ink: #5c400f;
+
+  --violet: #6b4fbf;
+  --violet-soft: #ece7fa;
+  --violet-ink: #3a2a6e;
+
+  --blue: #2f6690;
+  --blue-soft: #e5eef4;
+  --blue-ink: #1c3f57;
+
+  --rose: #b8455f;
+  --rose-soft: #f9e7ec;
+  --rose-ink: #5e1f2f;
+
+  --teal: #1f7a75;
+  --teal-soft: #e2f3f1;
+  --teal-ink: #0f433f;
+
+  --success: #1e7a4d;
+  --success-soft: #e4f4ea;
+  --warning: #b9812f;
+  --warning-soft: #f7ecd8;
+  --danger: #b8402e;
+  --danger-soft: #fbe9e4;
+  --info: #2f6690;
+  --info-soft: #e5eef4;
+
+  --demo: #4f46e5;
+  --demo-soft: #eceafe;
+  --demo-ink: #3730a3;
+
+  --shadow-sm: 0 1px 2px rgba(22, 33, 28, 0.06);
+  --shadow-md: 0 6px 20px rgba(22, 33, 28, 0.08);
+  --shadow-lg: 0 16px 40px rgba(22, 33, 28, 0.12);
+}
