@@ -96,6 +96,20 @@ export function ProjectCard({ project, featured = false }: { project: Project; f
             {openingDemo ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ArrowUpRight className="h-3.5 w-3.5" />}
           </button>
         )}
+        {!demoHref && project.liveUrl && (
+          <a
+            href={project.liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(
+              'inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] px-3.5 py-2 text-[13px] font-medium text-on-accent transition-opacity hover:opacity-90',
+              classes.solidBg,
+            )}
+          >
+            Visit Live Site
+            <ArrowUpRight className="h-3.5 w-3.5" />
+          </a>
+        )}
         <Link
           to={`/work/${project.slug}`}
           className="inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] border border-border px-3.5 py-2 text-[13px] font-medium text-ink transition-colors hover:border-ink-dim"

@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
 import { ArrowRight, Mail } from 'lucide-react'
+import { PROJECTS } from '@/data/projects'
+
+const SHIPPED_COUNT = PROJECTS.filter((project) => project.visibility === 'published').length
 
 const PULSE_ITEMS = [
   { label: 'SYSTEM STATUS', value: 'ONLINE', tone: 'success' as const },
@@ -84,7 +87,7 @@ export function Hero() {
                 </div>
               ))}
               <div className="mt-1 rounded-[var(--radius-sm)] bg-surface-2 px-3 py-2 font-mono text-[10.5px] leading-relaxed text-ink-dim">
-                6 systems shipped · 0 client identities exposed
+                {SHIPPED_COUNT} systems shipped · 0 client identities exposed
               </div>
             </div>
           </div>

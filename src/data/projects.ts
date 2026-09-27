@@ -374,6 +374,118 @@ export const PROJECTS: Project[] = [
         'The result is a practical complaint-management system that centralizes customer records, improves complaint visibility, simplifies follow-up, and gives management useful reporting tools without requiring a complex backend infrastructure.',
     },
   },
+  {
+    id: 'proj-my-moto',
+    slug: 'my-moto',
+    number: '08',
+    category: 'Personal Product · Motorcycle Maintenance Tracker',
+    title: 'My Moto',
+    accent: 'teal',
+    featured: false,
+    status: 'completed',
+    visibility: 'published',
+    sortOrder: 8,
+    demoType: 'none',
+    liveUrl: 'https://my-moto-eta.vercel.app/',
+    createdAt: '2026-09-27T00:00:00.000Z',
+    updatedAt: '2026-09-27T00:00:00.000Z',
+    tags: [
+      'Next.js',
+      'Supabase',
+      'PWA',
+      'Motorcycle Maintenance',
+      'Fuel Tracking',
+      'Personal Finance',
+      'Arabic Interface',
+      'RTL',
+    ],
+    description:
+      'A personal product that tracks a motorcycle\'s entire lifecycle — fuel, range, and maintenance — from manually logged odometer readings and refuels, instead of relying on manufacturer sensors or estimates.',
+    capabilities: [
+      'Fuel range calculated from your own refuel entries once two full tanks are logged, not a manufacturer number',
+      'Maintenance tracking across 18 individual parts, each with its own interval and condition',
+      'A single health score with a transparent breakdown of what it is built from',
+      'Free tier covers fuel/range, daily kilometers, and safety-critical parts (brakes, tires, cooling)',
+      'PRO tier unlocks unlimited motorcycles, full history, expense analytics, and an AI assistant',
+    ],
+    tech: ['Next.js (App Router)', 'TypeScript', 'Supabase (Auth + Postgres)', 'Vercel', 'PWA'],
+    caseStudy: {
+      problem:
+        "It's easy to lose track of a motorcycle's maintenance history — forgetting when a specific part was last serviced, how much has been spent on it, and what's actually due during the current riding period.",
+      solution:
+        'My Moto replaces memory and guesswork with logged data: odometer readings, fuel refuels, and per-part maintenance entries build a real picture of consumption and service intervals instead of relying on manufacturer defaults or a sensor that isn\'t there.',
+      keyFeatures: [
+        'Fuel & range estimate computed from actual refuel entries, active once two full tank fill-ups are logged',
+        'Maintenance schedule across 18 parts, each showing its own interval, condition, and whether a figure is confirmed or estimated',
+        'One health score with a visible breakdown of the factors behind it',
+        'No sensors or vehicle connection required — every number traces back to something the rider entered',
+        'Free tier for fuel/range and safety-critical parts; PRO tier for unlimited motorcycles, full history, expense analytics, and an AI assistant',
+      ],
+      architecture:
+        'Built with Next.js (App Router) and deployed on Vercel; Supabase handles authentication and the Postgres data model for motorcycles, refuel logs, and per-part maintenance records. Ships as an installable PWA with a fully Arabic, RTL interface.',
+      contribution:
+        'Built with Claude Code as a pair-programming collaborator — the product definition, the data model for parts and maintenance intervals, the fuel-range calculation logic, and the UI were all driven and reviewed by me.',
+      challenges:
+        "Modeling a fuel-range estimate that stays honest when data is incomplete — the app deliberately reports that it doesn't know yet rather than fabricating a number before enough refuel history exists, which shaped both the data model and the onboarding flow (choose motorcycle → log odometer → log a full-tank refuel).",
+      result:
+        "Gives the rider one place to see real cost and maintenance status per part instead of relying on memory, with a range estimate grounded in their own riding and refueling habits rather than a manufacturer spec sheet.",
+    },
+  },
+  {
+    id: 'proj-system-application-team',
+    slug: 'system-application-team',
+    number: '09',
+    category: 'Internal Tool · Team Performance Management',
+    title: 'System Application Team',
+    accent: 'violet',
+    featured: false,
+    status: 'completed',
+    visibility: 'published',
+    sortOrder: 9,
+    demoType: 'none',
+    liveUrl: 'https://team-system-psi.vercel.app/',
+    createdAt: '2026-09-27T00:00:00.000Z',
+    updatedAt: '2026-09-27T00:00:00.000Z',
+    tags: [
+      'Next.js',
+      'Supabase',
+      'Team Management',
+      'Performance Tracking',
+      'Role-Based Access',
+      'Google OAuth',
+      'Arabic Interface',
+      'RTL',
+    ],
+    description:
+      "An internal dashboard for tracking a team's day-to-day performance, with Team Leader-gated account activation and Google or email sign-in.",
+    capabilities: [
+      "Central performance dashboard for tracking each team member's work",
+      'Google OAuth and email/password sign-in',
+      'New accounts stay disabled until a Team Leader approves them',
+      'Role-based access separating Team Leader oversight from regular members',
+    ],
+    tech: ['Next.js (App Router)', 'TypeScript', 'Supabase (Auth + Postgres)', 'Vercel'],
+    caseStudy: {
+      problem:
+        "Tracking how a team is actually performing — who's doing what, and how well — tends to live in scattered chats and spreadsheets that nobody keeps current.",
+      solution:
+        'A dedicated internal dashboard where team members sign in and their performance is tracked in one place, with a Team Leader role controlling who gets access.',
+      keyFeatures: [
+        'Central performance dashboard per team member',
+        'Google OAuth or email/password sign-in',
+        'New sign-ups are held in a disabled state until a Team Leader activates them',
+        'Role separation between Team Leader and regular team members',
+      ],
+      architecture:
+        'Built with Next.js (App Router) and deployed on Vercel; Supabase provides authentication (Google OAuth + email/password) and the Postgres backend storing team members, roles, and performance data.',
+      contribution:
+        'Designed and built end-to-end, including the account-approval flow, role separation, and the performance dashboard.',
+      challenges:
+        'Gating new sign-ups behind explicit Team Leader approval without adding friction to the everyday login flow for already-approved members.',
+      result:
+        'Gives the team a single, access-controlled place to track performance instead of scattered manual tracking.',
+    },
+  },
 ]
 
 export function getProjectBySlug(slug: string): Project | undefined {
