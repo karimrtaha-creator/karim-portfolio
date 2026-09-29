@@ -8,9 +8,16 @@ import { accentClasses } from '@/lib/accent'
 
 export function ProjectPreview() {
   const { id } = useParams<{ id: string }>()
-  const { getById } = useProjectDraftStore()
+  const { getById, loading } = useProjectDraftStore()
   const project = id ? getById(id) : undefined
 
+  if (loading) {
+    return (
+      <AdminLayout>
+        <div className="flex min-h-[30vh] items-center justify-center text-[13px] text-ink-dim">Loading…</div>
+      </AdminLayout>
+    )
+  }
   if (!project) return <Navigate to="/admin/projects" replace />
 
   const classes = accentClasses(project.accent)

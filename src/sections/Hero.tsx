@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { ArrowRight, Mail } from 'lucide-react'
-import { PROJECTS } from '@/data/projects'
-
-const SHIPPED_COUNT = PROJECTS.filter((project) => project.visibility === 'published').length
+import { usePublishedProjects } from '@/hooks/usePublishedProjects'
+import { useProfilePhoto } from '@/hooks/useProfilePhoto'
 
 const PULSE_ITEMS = [
   { label: 'SYSTEM STATUS', value: 'ONLINE', tone: 'success' as const },
@@ -12,6 +11,9 @@ const PULSE_ITEMS = [
 
 export function Hero() {
   const [tick, setTick] = useState(0)
+  const { projects } = usePublishedProjects()
+  const { photoUrl } = useProfilePhoto()
+  const shippedCount = projects.length
 
   useEffect(() => {
     const id = setInterval(() => setTick((current) => current + 1), 2400)
@@ -32,10 +34,21 @@ export function Hero() {
             Available for new projects
           </div>
 
-          <p className="font-mono text-sm font-medium text-accent">Karim</p>
-          <p className="mt-1 font-mono text-[13px] uppercase tracking-[0.1em] text-ink-dim">
-            Software Developer · Automation · AI · Systems
-          </p>
+          <div className="flex items-center gap-3">
+            {photoUrl && (
+              <img
+                src={photoUrl}
+                alt="Karim"
+                className="h-11 w-11 rounded-full border border-border object-cover"
+              />
+            )}
+            <div>
+              <p className="font-mono text-sm font-medium text-accent">Karim</p>
+              <p className="mt-1 font-mono text-[13px] uppercase tracking-[0.1em] text-ink-dim">
+                Software Developer · Automation · AI · Systems
+              </p>
+            </div>
+          </div>
 
           <h1 className="mt-5 max-w-xl font-display text-[2.3rem] font-bold leading-[1.12] tracking-tight text-ink md:text-[3.1rem]">
             From manual workflows to <span className="text-accent">intelligent software.</span>
@@ -87,7 +100,7 @@ export function Hero() {
                 </div>
               ))}
               <div className="mt-1 rounded-[var(--radius-sm)] bg-surface-2 px-3 py-2 font-mono text-[10.5px] leading-relaxed text-ink-dim">
-                {SHIPPED_COUNT} systems shipped · 0 client identities exposed
+                {shippedCount} systems shipped · 0 client identities exposed
               </div>
             </div>
           </div>

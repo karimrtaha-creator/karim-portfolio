@@ -1,5 +1,14 @@
 import type { Project } from './types'
 
+/**
+ * Bundled fallback only — the live source of truth is the `projects` table
+ * in Supabase (see src/lib/projectsApi.ts, src/hooks/usePublishedProjects.ts).
+ * This array is what the public site renders on first paint and what it
+ * falls back to if Supabase is unreachable or misconfigured, so a project
+ * added purely through the admin UI intentionally won't appear here — that's
+ * expected, not a bug. Keep this in sync manually only if you want the
+ * offline/outage fallback to reflect recent additions.
+ */
 export const PROJECTS: Project[] = [
   {
     id: 'proj-agent-monitor',
@@ -487,13 +496,3 @@ export const PROJECTS: Project[] = [
     },
   },
 ]
-
-export function getProjectBySlug(slug: string): Project | undefined {
-  return PROJECTS.find((project) => project.slug === slug)
-}
-
-/** Public-facing lookup — draft projects must never be reachable by guessing their URL. */
-export function getPublishedProjectBySlug(slug: string): Project | undefined {
-  const project = getProjectBySlug(slug)
-  return project?.visibility === 'published' ? project : undefined
-}

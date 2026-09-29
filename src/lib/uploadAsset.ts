@@ -57,6 +57,26 @@ export async function uploadProjectAsset(file: File, slug: string, kind: AssetKi
   return data.publicUrl
 }
 
+/** Uploads the site's profile photo to Supabase Storage and returns its public URL. */
+export async function uploadProfilePhoto(file: File): Promise<string> {
+  if (!supabase) throw new Error('Supabase is not configured.')
+
+  const ext = (file.name.split('.').pop() || 'png').toLowerCase()
+  const mimeType = IMAGE_MIME_BY_EXT[ext] ?? file.type ?? 'application/octet-stream'
+  const path = `profile/${Date.now()}.${ext}`
+  const body = await readAsBytes(file)
+
+  const { error } = await supabase.storage.from(ASSETS_BUCKET).upload(path, body, {
+    cacheControl: '3600',
+    upsert: false,
+    contentType: mimeType,
+  })
+  if (error) throw error
+
+  const { data } = supabase.storage.from(ASSETS_BUCKET).getPublicUrl(path)
+  return data.publicUrl
+}
+
 /**
  * Uploads a standalone HTML demo file to its own dedicated bucket and
  * returns its public URL.

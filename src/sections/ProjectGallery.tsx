@@ -1,4 +1,4 @@
-import { PROJECTS } from '@/data/projects'
+import { usePublishedProjects } from '@/hooks/usePublishedProjects'
 import { ProjectCard } from '@/components/ProjectCard'
 import { ScrollReveal } from '@/components/ui/ScrollReveal'
 import { SectionHeading } from '@/components/ui/SectionHeading'
@@ -6,7 +6,7 @@ import { SectionHeading } from '@/components/ui/SectionHeading'
 const NUMBER_WORDS = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten']
 
 export function ProjectGallery() {
-  const published = PROJECTS.filter((project) => project.visibility === 'published').sort((a, b) => a.sortOrder - b.sortOrder)
+  const { projects: published } = usePublishedProjects()
   const featured = published.find((project) => project.featured)
   const rest = published.filter((project) => !project.featured)
   const countWord = NUMBER_WORDS[published.length] ?? String(published.length)

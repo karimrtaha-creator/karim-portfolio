@@ -156,10 +156,31 @@ function UploadDemoField({ slug, onUploaded }: { slug: string; onUploaded: (url:
 
 export function ProjectForm() {
   const { id } = useParams<{ id: string }>()
+  const { getById, loading, create, update } = useProjectDraftStore()
+
+  if (loading) {
+    return (
+      <AdminLayout>
+        <div className="flex min-h-[30vh] items-center justify-center text-[13px] text-ink-dim">Loading…</div>
+      </AdminLayout>
+    )
+  }
+
+  const existing = id ? getById(id) : undefined
+  return <ProjectFormBody key={id ?? 'new'} existing={existing} create={create} update={update} />
+}
+
+function ProjectFormBody({
+  existing,
+  create,
+  update,
+}: {
+  existing: Project | undefined
+  create: (draft: Partial<Project>) => Promise<Project>
+  update: (id: string, patch: Partial<Project>) => Promise<void>
+}) {
   const navigate = useNavigate()
   const { push } = useToast()
-  const { getById, create, update } = useProjectDraftStore()
-  const existing = id ? getById(id) : undefined
 
   const [draft, setDraft] = useState<Partial<Project>>(
     existing ?? {
@@ -177,23 +198,31 @@ export function ProjectForm() {
       caseStudy: EMPTY_CASE_STUDY,
     },
   )
+  const [saving, setSaving] = useState(false)
 
   const set = <K extends keyof Project>(key: K, value: Project[K]) => setDraft((current) => ({ ...current, [key]: value }))
   const setCaseStudy = <K extends keyof CaseStudy>(key: K, value: CaseStudy[K]) =>
     setDraft((current) => ({ ...current, caseStudy: { ...(current.caseStudy ?? EMPTY_CASE_STUDY), [key]: value } }))
 
-  const save = () => {
+  const save = async () => {
     if (!draft.title?.trim() || !draft.slug?.trim() || !draft.category?.trim() || !draft.description?.trim()) {
       push({ title: 'Missing required fields', description: 'Name, slug, category, and description are required.', tone: 'warning' })
       return
     }
-    if (existing) {
-      update(existing.id, draft)
-      push({ title: 'Saved', description: draft.title, tone: 'success' })
-    } else {
-      const created = create(draft)
-      push({ title: 'Draft created', description: created.title, tone: 'success' })
-      navigate(`/admin/projects/${created.id}/edit`, { replace: true })
+    setSaving(true)
+    try {
+      if (existing) {
+        await update(existing.id, draft)
+        push({ title: 'Saved', description: draft.title, tone: 'success' })
+      } else {
+        const created = await create(draft)
+        push({ title: 'Draft created', description: created.title, tone: 'success' })
+        navigate(`/admin/projects/${created.id}/edit`, { replace: true })
+      }
+    } catch (error) {
+      push({ title: 'Save failed', description: error instanceof Error ? error.message : 'Unknown error', tone: 'warning' })
+    } finally {
+      setSaving(false)
     }
   }
 
@@ -205,7 +234,9 @@ export function ProjectForm() {
           <Button variant="secondary" onClick={() => navigate('/admin/projects')}>
             Cancel
           </Button>
-          <Button onClick={save}>{existing ? 'Save Changes' : 'Create Draft'}</Button>
+          <Button onClick={save} disabled={saving}>
+            {saving ? 'Saving…' : existing ? 'Save Changes' : 'Create Draft'}
+          </Button>
         </div>
       </div>
 
@@ -336,7 +367,9 @@ export function ProjectForm() {
         <Button variant="secondary" onClick={() => navigate('/admin/projects')}>
           Cancel
         </Button>
-        <Button onClick={save}>{existing ? 'Save Changes' : 'Create Draft'}</Button>
+        <Button onClick={save} disabled={saving}>
+          {saving ? 'Saving…' : existing ? 'Save Changes' : 'Create Draft'}
+        </Button>
       </div>
     </AdminLayout>
   )

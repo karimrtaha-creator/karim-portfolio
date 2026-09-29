@@ -1,14 +1,15 @@
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { ArrowLeft, ArrowUpRight } from 'lucide-react'
-import { getPublishedProjectBySlug } from '@/data/projects'
+import { usePublishedProject } from '@/hooks/usePublishedProjects'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { accentClasses } from '@/lib/accent'
 
 export function CaseStudy() {
   const { slug } = useParams<{ slug: string }>()
-  const project = slug ? getPublishedProjectBySlug(slug) : undefined
+  const { project, loading } = usePublishedProject(slug)
 
+  if (loading) return <div className="flex min-h-[50vh] items-center justify-center text-[13px] text-ink-dim">Loading…</div>
   if (!project) return <Navigate to="/" replace />
 
   const classes = accentClasses(project.accent)

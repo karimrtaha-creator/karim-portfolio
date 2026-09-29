@@ -1,12 +1,13 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeft, FileText } from 'lucide-react'
-import { getProjectBySlug } from '@/data/projects'
+import { usePublishedProject } from '@/hooks/usePublishedProjects'
 import { Badge } from '@/components/ui/Badge'
 import { accentClasses } from '@/lib/accent'
 
 export function DemoPageShell({ slug, children }: { slug: string; children: ReactNode }) {
-  const project = getProjectBySlug(slug)
+  const { project, loading } = usePublishedProject(slug)
+  if (loading) return null
   if (!project) return null
   const classes = accentClasses(project.accent)
 
